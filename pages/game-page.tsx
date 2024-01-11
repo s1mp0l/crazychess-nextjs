@@ -1,9 +1,11 @@
-import {Board} from "@/entities/board/board";
+import {Game} from "@/widgets/game/game";
 
-export const GamePage = () => {
+const GamePage = () => {
   return (
     <div>
-      <Board />
+      <Game />
     </div>
   );
 };
+
+export default GamePage;

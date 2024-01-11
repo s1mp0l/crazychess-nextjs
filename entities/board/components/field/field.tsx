@@ -1,20 +1,33 @@
-"use client"
-
 import './field.css'
 import {PieceComponent} from "@/entities/piece/piece";
 import {Field} from "@/features/chess-engine/board/Field";
+import React, {useState} from "react";
+import {useDrop} from "react-dnd";
+import {ItemTypes} from "@/entities/board/lib/constants";
 
 interface FieldProps {
   field: Field
   click: (field: Field) => void;
-  selected?: boolean
+  selected?: boolean;
+  dragPiece: (field: Field) => void;
+  dropPiece: (field: Field) => void;
 }
 
 const getFieldColor = (fieldColor: string) => {
   return fieldColor === 'b' ? '#7D945D' : '#EEEED5'
 }
 
-export const FieldComponent = ({field, click, selected}: FieldProps) => {
+export const FieldComponent = ({field, click, selected, dragPiece, dropPiece}: FieldProps) => {
+  const [{ isOver }, drop] = useDrop(() => ({
+    accept: ItemTypes.PIECE,
+    drop: () => {
+      dropPiece(field)
+    },
+    collect: monitor => ({
+      isOver: monitor.isOver(),
+    }),
+  }), [field, dropPiece])
+
   const position = `${field.y}${field.x}`;
   return (
     <div className={[
@@ -22,12 +35,16 @@ export const FieldComponent = ({field, click, selected}: FieldProps) => {
       selected ? 'selected' : '',
       field.available && field.piece ? 'availableEnemy' : ''
     ].join(' ')}
-         style={{background: getFieldColor(field.color)}}
+         style={{background: isOver ? 'yellow' : getFieldColor(field.color)}}
          data-id={position}
          onClick={() => click(field)}
+         ref={drop}
+         // onMouseDown={startPieceDragHandler}
+         // onMouseMove={dragPieceHandler}
+         // onMouseUp={dropPieceHandler}
     >
       {field.available && !field.piece && <div className={'availableEmpty'}/>}
-      {field.piece && <PieceComponent piece={field.piece} />}
+      {field.piece && <PieceComponent piece={field.piece} dragPiece={dragPiece}/>}
     </div>
   );
 };

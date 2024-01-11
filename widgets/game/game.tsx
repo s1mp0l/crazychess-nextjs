@@ -1,16 +1,56 @@
 "use client"
 
-import {Chess} from "@/features/chess-engine/chess";
 import {BoardComponent} from "@/entities/board/board";
-import {useState} from "react";
+import {useCallback, useEffect, useState} from "react";
 import {Board} from "@/features/chess-engine/board/Board";
+import {Player} from "@/features/chess-player/Player";
+import {PlayerRowComponent} from "@/features/chess-player/player-row";
+import {GameOverModal} from "@/widgets/game/components/game-over-modal";
 
 export const Game = () => {
   const [board, setBoard] = useState(new Board());
-  // const chess = new Chess(null, 8);
-  //
-  // const board = chess.getBoard();
-  // chess.setBoard.bind(chess)
+  const [loser, setLoser] = useState<PieceColor | null>(null);
 
-  return <BoardComponent board={board} setBoard={setBoard}/>
+  const updateBoard = useCallback(() => {
+    if (!board) return;
+    const newBoard = board.getCopyBoard()
+    setBoard(newBoard)
+    const availableMoves = newBoard.countAvailableMoves();
+    if (availableMoves <= 0) setLoser(newBoard.turn);
+  }, [board])
+
+  const initialTime = 10 * 60;
+
+  const blackPlayer = new Player( 'b', 'Player1');
+  const whitePlayer = new Player('w', 'Player2');
+
+  return (
+    <div style={{
+      width: '85vh',
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      gap: '2px'
+    }}>
+      {loser && <GameOverModal loser={loser}/>}
+      <PlayerRowComponent
+        initialTime={initialTime}
+        player={blackPlayer}
+        turn={board.turn}
+        loser={loser}
+        setLoser={setLoser}
+      />
+      <BoardComponent
+        board={board}
+        updateBoard={updateBoard}
+      />
+      <PlayerRowComponent
+        initialTime={initialTime}
+        player={whitePlayer}
+        turn={board.turn}
+        loser={loser}
+        setLoser={setLoser}
+      />
+    </div>
+  )
 }
