@@ -9,17 +9,26 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@react-three/drei": "^8.10.6",
+    "@react-three/fiber": "^7.0.26",
+    "@reduxjs/toolkit": "^1.9.1",
+    "gsap": "^3.11.3",
+    "howler": "^2.0.10",
     "next": "13.5.4",
     "react": "^18",
     "react-dnd": "^16.0.1",
     "react-dnd-html5-backend": "^16.0.1",
     "react-dom": "^18",
-    "socket.io-client": "^4.7.2"
+    "react-redux": "^7.2.8",
+    "react-spinners": "^0.13.7",
+    "socket.io-client": "^4.7.2",
+    "three": "^0.160.0"
   },
   "devDependencies": {
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
+    "@types/three": "^0.160.0",
     "autoprefixer": "^10",
     "eslint": "^8",
     "eslint-config-next": "13.5.4",
